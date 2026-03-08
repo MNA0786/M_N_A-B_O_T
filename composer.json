@@ -1,25 +1,13 @@
 {
     "name": "entertainment-tadka/telegram-bot",
-    "description": "Entertainment Tadka Telegram Movie Bot - Complete OTT Search Bot",
+    "description": "Entertainment Tadka Telegram Movie Bot",
     "type": "project",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "Mahatab Ansari",
-            "email": "admin@entertainmenttadka.com"
-        }
-    ],
     "require": {
         "php": ">=8.1",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-zip": "*",
-        "ext-mbstring": "*",
-        "ext-fileinfo": "*"
-    },
-    "require-dev": {
-        "ext-curl": "*",
-        "ext-json": "*"
+        "ext-mbstring": "*"
     },
     "autoload": {
         "files": [
@@ -28,19 +16,23 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "chmod 666 movies.csv users.json bot_stats.json movie_requests.json user_settings.json delete_queue.json filter_sessions.json bot_activity.log || true",
-            "chmod 777 backups || true",
-            "echo '✅ Installation complete! Don\\'t forget to set webhook: yourdomain.com/?setwebhook=1'"
-        ],
-        "post-update-cmd": [
-            "chmod 666 movies.csv users.json bot_stats.json movie_requests.json user_settings.json delete_queue.json filter_sessions.json bot_activity.log || true",
-            "chmod 777 backups || true"
+            "@php -r \"chmod('movies.csv', 0666);\" || true",
+            "@php -r \"chmod('users.json', 0666);\" || true",
+            "@php -r \"chmod('bot_stats.json', 0666);\" || true",
+            "@php -r \"chmod('movie_requests.json', 0666);\" || true",
+            "@php -r \"chmod('user_settings.json', 0666);\" || true",
+            "@php -r \"chmod('delete_queue.json', 0666);\" || true",
+            "@php -r \"chmod('filter_sessions.json', 0666);\" || true",
+            "@php -r \"chmod('bot_activity.log', 0666);\" || true",
+            "@php -r \"mkdir('backups', 0777);\" || true",
+            "@php -r \"chmod('backups', 0777);\" || true"
         ]
     },
     "config": {
         "platform-check": false,
-        "optimize-autoloader": true
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
+    }
 }
