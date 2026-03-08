@@ -1,56 +1,34 @@
 FROM php:8.1-apache
 
-LABEL maintainer="Mahatab Ansari <admin@entertainmenttadka.com>"
-LABEL description="Entertainment Tadka Telegram Movie Bot"
+# Enable Apache modules
+RUN a2enmod rewrite headers
 
-# System dependencies install karo
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    git \
     curl \
-    wget \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    libzip-dev \
-    libcurl4-openssl-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
-    && docker-php-ext-enable mbstring exif
+    && docker-php-ext-install zip
 
-# Composer install karo
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Working directory set karo
+# Copy application
 WORKDIR /var/www/html
-
-# Apache configuration - modules enable karo
-RUN a2enmod rewrite headers expires
-
-# PHP configuration
-RUN echo "upload_max_filesize = 50M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini
-
-# Port expose karo
-EXPOSE 80
-
-# Application copy karo
 COPY . .
 
-# File permissions set karo
-RUN mkdir -p backups logs \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod 666 movies.csv users.json bot_stats.json movie_requests.json user_settings.json delete_queue.json filter_sessions.json bot_activity.log 2>/dev/null || true \
-    && chmod 777 backups logs
+# Create required files with proper permissions
+RUN mkdir -p backups \
+    && touch movies.csv users.json bot_stats.json movie_requests.json user_settings.json delete_queue.json filter_sessions.json bot_activity.log \
+    && chmod 666 movies.csv users.json bot_stats.json movie_requests.json user_settings.json delete_queue.json filter_sessions.json bot_activity.log \
+    && chmod 777 backups
 
-# Composer install (agar hai to)
+# PHP error logging enable karo
+RUN echo "error_log = /dev/stderr" >> /usr/local/etc/php/conf.d/error-logging.ini \
+    && echo "log_errors = On" >> /usr/local/etc/php/conf.d/error-logging.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/conf.d/error-logging.ini
+
+# Composer install (if needed)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader || true; fi
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
-
+EXPOSE 80
 CMD ["apache2-foreground"]
