@@ -1,36 +1,31 @@
 RewriteEngine On
 
+# Disable MultiViews to prevent issues
+Options -MultiViews
+
 # Security headers
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "DENY"
     Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# PHP settings
-php_flag display_errors off
-php_value upload_max_filesize 50M
-php_value post_max_size 50M
-php_value memory_limit 256M
-php_value max_execution_time 300
-php_value max_input_time 300
+# PHP settings - Use if mod_php is enabled
+<IfModule mod_php8.c>
+    php_flag display_errors off
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+</IfModule>
 
-# API routes handle karo
+# Rewrite rules
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Bot webhook ke liye allow karo
-RewriteRule ^$ index.php [L]
-
-# File access restrict karo
-<FilesMatch "\.(json|log|txt|bak)$">
-    Order allow,deny
+# Block access to sensitive files
+<FilesMatch "\.(json|log|txt|bak|lock)$">
+    Order Allow,Deny
     Deny from all
-</FilesMatch>
-
-<FilesMatch "^(index\.php|webhook\.php)$">
-    Order allow,deny
-    Allow from all
 </FilesMatch>
