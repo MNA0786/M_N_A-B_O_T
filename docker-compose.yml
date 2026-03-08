@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: entertainment-tadka-bot
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./backups:/var/www/html/backups
+      - ./logs:/var/www/html/logs
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_USERNAME=${BOT_USERNAME}
+      - ADMIN_ID=${ADMIN_ID}
+      - API_ID=${API_ID}
+      - API_HASH=${API_HASH}
+      - MAIN_CHANNEL_ID=${MAIN_CHANNEL_ID}
+      - MAIN_CHANNEL_USERNAME=${MAIN_CHANNEL_USERNAME}
+      - THEATER_CHANNEL_ID=${THEATER_CHANNEL_ID}
+      - THEATER_CHANNEL_USERNAME=${THEATER_CHANNEL_USERNAME}
+      - SERIAL_CHANNEL_ID=${SERIAL_CHANNEL_ID}
+      - SERIAL_CHANNEL_USERNAME=${SERIAL_CHANNEL_USERNAME}
+      - BACKUP_CHANNEL_ID=${BACKUP_CHANNEL_ID}
+      - BACKUP_CHANNEL_USERNAME=${BACKUP_CHANNEL_USERNAME}
+      - REQUEST_GROUP_ID=${REQUEST_GROUP_ID}
+      - REQUEST_GROUP_USERNAME=${REQUEST_GROUP_USERNAME}
+      - PRIVATE_CHANNEL_1_ID=${PRIVATE_CHANNEL_1_ID}
+      - PRIVATE_CHANNEL_2_ID=${PRIVATE_CHANNEL_2_ID}
+      - ENVIRONMENT=production
+    restart: unless-stopped
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  bot-network:
+    driver: bridge

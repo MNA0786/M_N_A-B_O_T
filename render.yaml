@@ -1,0 +1,63 @@
+services:
+  - type: web
+    name: entertainment-tadka-bot
+    runtime: docker
+    repo: https://github.com/yourusername/entertainment-tadka-bot
+    branch: main
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: BOT_USERNAME
+        value: "@EntertainmentTadkaBot"
+      - key: BOT_ID
+        value: "8315381064"
+      - key: ADMIN_ID
+        value: "1080317415"
+      - key: API_ID
+        value: "21944581"
+      - key: API_HASH
+        value: "7b1c174a5cd3466e25a976c39a791737"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: MAIN_CHANNEL_USERNAME
+        value: "@EntertainmentTadka786"
+      - key: MAIN_CHANNEL_ID
+        value: "-1003181705395"
+      - key: SERIAL_CHANNEL_USERNAME
+        value: "@Entertainment_Tadka_Serial_786"
+      - key: SERIAL_CHANNEL_ID
+        value: "-1003614546520"
+      - key: THEATER_CHANNEL_USERNAME
+        value: "@threater_print_movies"
+      - key: THEATER_CHANNEL_ID
+        value: "-1002831605258"
+      - key: BACKUP_CHANNEL_USERNAME
+        value: "@ETBackup"
+      - key: BACKUP_CHANNEL_ID
+        value: "-1002964109368"
+      - key: PRIVATE_CHANNEL_1_ID
+        value: "-1003251791991"
+      - key: PRIVATE_CHANNEL_2_ID
+        value: "-1002337293281"
+      - key: REQUEST_GROUP_USERNAME
+        value: "@EntertainmentTadka7860"
+      - key: REQUEST_GROUP_ID
+        value: "-1003083386043"
+      - key: CACHE_EXPIRY
+        value: "300"
+      - key: ITEMS_PER_PAGE
+        value: "5"
+      - key: MAX_SEARCH_RESULTS
+        value: "15"
+      - key: DAILY_REQUEST_LIMIT
+        value: "5"
+      - key: AUTO_BACKUP_HOUR
+        value: "03"
+    disk:
+      name: bot-data
+      mountPath: /var/www/html/backups
+      sizeGB: 1
+    healthCheckPath: /
+    autoDeploy: true
