@@ -1,17 +1,25 @@
+# ==================== RENDER.COM CONFIGURATION ====================
+# File: render.yaml
+# Description: Deployment configuration for Render.com
+
 services:
   - type: web
-    name: m-n-a-b-o-t
-    runtime: docker
-    plan: free
-    dockerfilePath: ./Dockerfile
+    name: entertainment-tadka-bot
+    env: php
+    buildCommand: ""
+    startCommand: php index.php
     envVars:
       - key: BOT_TOKEN
         sync: false
       - key: ADMIN_ID
-        value: "1080317415"
-      - key: MAIN_CHANNEL_ID
-        value: "-1003181705395"
+        sync: false
       - key: ENVIRONMENT
-        value: "production"
+        value: production
+      - key: DEBUG
+        value: false
     healthCheckPath: /
     autoDeploy: true
+    disk:
+      name: data
+      mountPath: /opt/data
+      sizeGB: 1
